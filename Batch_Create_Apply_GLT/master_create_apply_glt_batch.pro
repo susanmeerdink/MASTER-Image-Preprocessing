@@ -9,18 +9,19 @@ PRO master_create_apply_glt_batch
   envi_batch_init
 
   ;Select input files
-  fileDir = FILEPATH('', ROOT_DIR = 'R:\MASTER_Imagery\Santa Barbara 20140604\') ;Change this to your directory!
+  fileDir = FILEPATH('', ROOT_DIR = 'R:\MASTER_Imagery\Santa Barbara 20131204\') ;Change this to your directory!
 
   ;Makes directory names for each FL would need to change 'SN' if another Flight box and 11 to the number of flight boxes in your series
   fl_list = make_array(1,11,/string)
-  for i = 1,11,1 do begin ;Right now goes from FL02_FL03
-    if (i LT 10) then begin ;Add zero in front of number
-      stri = string(0) + string(i)
-    endif else begin ;Unless it's 10 or Greater (don't add zero in front)
-      stri = string(i)
-    endelse
-    fl_list[0,(i-1)] = STRCOMPRESS('FL'+stri,/REMOVE_all) ;Create the list of folders
-  endfor
+;  for i = 1,11,1 do begin ;Right now goes from FL02_FL03
+;    if (i LT 10) then begin ;Add zero in front of number
+;      stri = string(0) + string(i)
+;    endif else begin ;Unless it's 10 or Greater (don't add zero in front)
+;      stri = string(i)
+;    endelse
+;    fl_list[0,(i-1)] = STRCOMPRESS('FL'+stri,/REMOVE_all) ;Create the list of folders
+;  endfor
+fl_list = ['FL03','FL05','FL08','FL10','FL11']
 
   ;Loop through flightline folders (FL01, FL02, FL03,....)
   foreach element,fl_list do begin
