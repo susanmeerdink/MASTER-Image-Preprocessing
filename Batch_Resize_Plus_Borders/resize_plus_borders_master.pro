@@ -13,6 +13,7 @@ PRO resize_plus_borders
 
 ;;; INPUTS ;;;
 main_path = 'R:\Image-To-Image Registration\' ; Set directory that holds all flightlines
+sub_path = '\MASTER-Temp\' ;Set which master imagery to process
 base_image_id ='*20140416*' ;search term to identify base image (and base image only!) 
 all_image_id = 'FL*' ;search term which needs to apply to all images in the file path you want co-registered
 flightbox_name = 'SB' ;Name of flightbox to be processed (SB for Santa Barbara, SN for Sierra Nevada) 
@@ -55,7 +56,7 @@ outImage = 0 ;Set to zero for memory purposes
 ;;; PROCESSING ;;;
 FOREACH single_flightline, fl_list DO BEGIN ;;; LOOP THROUGH FLIGHTLINES ;;;
   print, 'Starting with ' + single_flightline ;Print which flightline is being processed
-  flightline_path = main_path + single_flightline + '\MASTER\'  ; Set path for flightline that is being processed
+  flightline_path = main_path + single_flightline + sub_path  ; Set path for flightline that is being processed
   cd, flightline_path ;Change Directory to flightline that is being processed
   
   ;;; FINDING BASE IMAGE ;;;
