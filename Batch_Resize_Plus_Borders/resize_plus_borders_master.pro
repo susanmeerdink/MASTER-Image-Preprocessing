@@ -1,4 +1,4 @@
-PRO resize_plus_borders
+PRO resize_plus_borders_master
 
 ; Created for images from the HyspIRI campaign (same area flown three times in 2013 and 2014).
 ; Images must have same number of bands and be in zero rotation (aka North to South - NO angle).
@@ -13,9 +13,9 @@ PRO resize_plus_borders
 
 ;;; INPUTS ;;;
 main_path = 'R:\Image-To-Image Registration\' ; Set directory that holds all flightlines
-sub_path = '\MASTER-Temp\' ;Set which master imagery to process
-base_image_id ='*20140416*' ;search term to identify base image (and base image only!) 
-all_image_id = 'FL*' ;search term which needs to apply to all images in the file path you want co-registered
+sub_path = '\MASTER-Emiss\' ;Set which master imagery to process
+base_image_id ='*f140416*' ;search term to identify base image (and base image only!) 
+all_image_id = '*20140416*' ;search term which needs to apply to all images in the file path you want co-registered
 flightbox_name = 'SB' ;Name of flightbox to be processed (SB for Santa Barbara, SN for Sierra Nevada) 
 ;;; INPUTS DONE ;;
 
@@ -31,21 +31,21 @@ ENVI_BATCH_INIT ;Doesn't require having ENVI open - use with stand alone IDL 64 
 
 ;; OPTION 1 - Loop through all flightlines
 ;; Makes directory names for each FL would need to change 'SN' if another Flight box and 11 to the number of flight boxes in your series
-number_of_flightlines = 11 ;total number of flightlines in flightbox (Santa Barbara has 11 flightlines)
-fl_list = make_array(1,number_of_flightlines,/string) ;Make array that will hold flightline names
-for i = 1,number_of_flightlines,1 do begin ;Loop through flightline numbers
-  if (i LT 10) then begin ;Add zero in front of number/counter
-    stri = string(0) + string(i)
-  endif else begin ;Unless it's 10 or Greater (don't add zero in front)
-    stri = string(i)
-  endelse
-  fl_list[0,(i-1)]=STRCOMPRESS(flightbox_name + '_FL' + stri,/REMOVE_all) ;Create the list of folders
-endfor
+;number_of_flightlines = 11 ;total number of flightlines in flightbox (Santa Barbara has 11 flightlines)
+;fl_list = make_array(1,number_of_flightlines,/string) ;Make array that will hold flightline names
+;for i = 1,number_of_flightlines,1 do begin ;Loop through flightline numbers
+;  if (i LT 10) then begin ;Add zero in front of number/counter
+;    stri = string(0) + string(i)
+;  endif else begin ;Unless it's 10 or Greater (don't add zero in front)
+;    stri = string(i)
+;  endelse
+;  fl_list[0,(i-1)]=STRCOMPRESS(flightbox_name + '_FL' + stri,/REMOVE_all) ;Create the list of folders
+;endfor
 
 ;; OPTION 2 - Only one flightline folder
-;flightline_name = '10' ;Set the single flightline you want to process (make sure to add 0 in front of flightlines under 10)
-;fl_list = make_array(1,1,/string);Make array that only holds one flightline name
-;fl_list[0,0] = STRCOMPRESS(flightbox_name + '_FL' + flightline_name,/REMOVE_all) ;Add flightline name to list
+flightline_name = '01' ;Set the single flightline you want to process (make sure to add 0 in front of flightlines under 10)
+fl_list = make_array(1,1,/string);Make array that only holds one flightline name
+fl_list[0,0] = STRCOMPRESS(flightbox_name + '_FL' + flightline_name,/REMOVE_all) ;Add flightline name to list
 ;;; DONE SETTING UP FLIGHTLINE FOLDERS ;;;
 
 ;;; ADDITIONAL VARIABLES FOR MEMORY PURPOSES ;;;
