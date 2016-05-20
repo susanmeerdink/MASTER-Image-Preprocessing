@@ -15,7 +15,7 @@ ENVI_BATCH_INIT ;Doesn't require having ENVI open - use with stand alone IDL 64 
 ;;; DONE SETTING UP ENVI/IDL ENVIRONMENT ;;;
 
 ;;; SETTING UP FLIGHTLINE FOLDERS ;;;
-fl_date_list = FILE_SEARCH(main_path,(flightbox_name + '*'))
+fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20131125'))
 ;;; DONE SETTING UP FLIGHTLINE FOLDERS ;;;
 
 ;;; PROCESSING ;;;
@@ -28,59 +28,88 @@ FOREACH single_date, fl_date_list DO BEGIN ;;; LOOP THROUGH FLIGHT DATES ;;;
     emis_file_list = FILE_SEARCH(single_flightline,'*emissivity_tes_Geo*')
     temp_file_list = FILE_SEARCH(single_flightline,'*surface_temp_Geo*')
     
-    ENVI_OPEN_FILE,emis_file_list[0],R_FID = emis_raster ;Open the emissivity file
-    ENVI_OPEN_FILE, temp_file_list[0],R_FID = temp_raster ;Open the temperature file
+    ENVI_OPEN_FILE,emis_file_list[0],R_FID = fidEmis ;Open the emissivity file
+    ENVI_OPEN_FILE, temp_file_list[0],R_FID = fidTemp ;Open the temperature file
     
-    ENVI_FILE_QUERY, emis_raster, $ ;Get info about emissivity file
+    ENVI_FILE_QUERY, fidEmis, $ ;Get info about emissivity file
       NB = emis_bands, $ ; Number of bands
-      NS = emis_ns, $ ;Number of samples
-      NL = emis_nl, $ ;Number of lines
-      DIMS = emis_dims, $ ;Dimensions of image
+      NS = numSamples, $ ;Number of samples
+      NL = numLines, $ ;Number of lines
       DATA_TYPE = emis_dt, $ ;Data Type
+      WL = emis_WL, $ ;Wavelength values
       SNAME = emis_name_short ;short file name for emissivity file
       
-    ENVI_FILE_QUERY, temp_raster, $ ; Get info about temperature file
-      NB = temp_bands, $; Number of bands
-      NL = temp_nl, $ ;number of lines
-      NS = temp_ns ; Number of samples
+    ENVI_FILE_QUERY, fidTemp, $ ; Get info about temperature file
+      NB = temp_bands; Number of bands
+      
+    map_info = ENVI_GET_MAP_INFO(FID = fidEmis)
+    
+    outImage = MAKE_ARRAY([numSamples, (emis_bands + temp_bands), numLines], TYPE = 3, VALUE = 0) ;Create empty array for output image with Long integer (32 bits) data type
+    countLine = 0 ;Counter for array assignment in loop
+    
+    ;;; GET DATA & ASSIGN TO RESIZED IMAGE ;;;
+    FOR i = 0, (numLines-1) DO BEGIN ;Loop through lines of image
+      emisData = ENVI_GET_SLICE(/BIL, FID = fidEmis, LINE = i, POS = INDGEN(emis_bands), XS = 0, XE = numSamples-1) ;Get Data from new image (returns in BIL format)
+      tempData = ENVI_GET_SLICE(/BIL, FID = fidTemp, LINE = i, POS = INDGEN(temp_bands), XS = 0, XE = numSamples-1) ;Get Data from new image (returns in BIL format)
+      ;              LINE = keyword to specify the line number to extract the slice from. LINE is a zero-based number.
+      ;              POS = keyword to specify an array of band positions
+      ;              XE = keyword to specify the x ending value. XE is a zero-based number.
+      ;              XS = keyword to specify the x starting value. XS is a zero-based number.
+      ;              /BIL = keyword that make data returned in BIL format - dimensions of a BIL slice are always [num_samples, num_bands]               
+      outLine = [[emisData],[tempData]];Assign Data to new array
+      outImage[0,0,countLine] = outLine ;Assign Array
+      countLine = countLine + 1 ;Advance counter used in array assignment 
+    ENDFOR
+    ;;; DONE GETTING DATA & ASSIGNING TO RESIZED IMAGE ;;; 
+    
+    ;;; WRITE DATA TO ENVI FILE ;;;
+    fileOutput = single_flightline + '\' + STRMID(emis_name_short,0,(STRPOS(emis_name_short,'-')+1)) + 'emissivity&temp' ;Set file name for new image
+    fileOutputTemp = single_flightline + '\' + STRMID(emis_name_short,0,(STRPOS(emis_name_short,'-')+1)) + 'emissivity&tempBIL' ;Set file name for new BSQ image
+    
+    ENVI_WRITE_ENVI_FILE, outImage, $ ; Data to write to file
+      OUT_NAME = fileOutputTemp, $ ;Output file name
+      NB = (emis_bands + temp_bands), $; Number of Bands
+      NL = numLines, $ ;Number of lines
+      NS = numSamples, $ ;Number of Samples
+      INTERLEAVE = 1 , $ ;Set this keyword to one of the following integer values to specify the interleave output: 0: BSQ 1: BIL 2: BIP
+      R_FID = fidInter, $ ;Set keyword for new file's FID
+      OFFSET = 0 ; Use this keyword to specify the offset (in bytes) to the start of the data in the file.
+    ;;; DONE WRITING DATA TO ENVI FILE ;;;
 
-    emis_proj = ENVI_GET_PROJECTION(FID = emis_raster, PIXEL_SIZE = emis_ps)
-    
-    outFileName = single_flightline + '\' + STRMID(emis_name_short,0,(STRPOS(emis_name_short,'-')+1)) + 'emissivity&temp'
-    
-    nb = emis_bands + temp_bands
-    fidIn = lonarr(nb)
-    posIn = lonarr(nb)
-    dimsIn = lonarr(5,nb)
-    for i = 0L, emis_bands - 1 do begin
-      fidIn[i] = emis_raster
-      posIn[i] = i
-      dimsIn[0,i] = [-1,0,emis_ns-1,0,emis_nl-1]
-    endfor
-    ;
-    for i = emis_bands, nb - 1 do begin
-      fidIn[i] = temp_raster
-      posIn[i] = i - emis_bands
-      dimsIn[0,i] = [-1,0,temp_ns-1,0,temp_nl-1]
-    endfor
-    
-    ENVI_DOIT, 'ENVI_LAYER_STACKING_DOIT', $ ; Use this procedure to build a new multi-band file from georeferenced images of various pixel sizes, extents, and projections.
-      DIMS = dimsIn,$ ;keyword is a five-element array of long integers that defines the spatial subset
-      FID = fidIn,$ ;keyword to specify the file IDs for the input files. 
-      OUT_NAME = outFileName,$ ;keyword to specify a string with the output filename for the resulting data.
-      OUT_DT  = emis_dt, $ ;Keyword to specify data type 14 = long 64 bit integer
-      OUT_PROJ = emis_proj,$ ; keyword to specify the output projection for the layer-stacked file.
-      OUT_PS = emis_ps,$ ;keyword to specify the output x and y pixel size. 
-      POS = posIn,$ ;keyword to specify an array of band positions POS is an array of long integers with one entry for each input file, with values ranging from 0 to the number of bands minus 1.
-      R_FID = outFID;routines that result in new images also have an R_FID, or “returned FID.” 
-    
-    if outFID EQ -1 then begin
-      print, 'Error in processing ' + single_flightline
-    endif
+    ;;; CONVERT TO BSQ ;;;
+    ENVI_FILE_QUERY,fidInter, DIMS = new_dims, NS = new_samples, NL = new_lines, NB = new_bands
+    ENVI_DOIT, 'CONVERT_DOIT', $
+      DIMS = new_dims, $ ;five-element array of long integers that defines the spatial subset
+      FID = fidInter, $ ;Set for new file's fid
+      OUT_NAME = fileOutput, $ ; Set new files output name
+      R_FID = fidFinal, $ ;Set BSQ file fid
+      O_INTERLEAVE = 0, $ ;keyword that specifies the interleave output: 0: BSQ, 1: BIL, 2: BIP
+      POS =  INDGEN(new_bands) ;specify an array of band positions
+    ;;; DONE CONVERTING TO BSQ ;;;
 
-    envi_file_mng, ID = emis_raster, /remove ;Close current Raster image
-    envi_file_mng, ID = temp_raster, /remove ;Close current Raster image
-    envi_file_mng, ID = outFID, /remove ;Close current Raster image
+    ;;; CREATING ENVI HEADER FILE ;;;
+    raster_wl = [string(emis_WL),'surface_temp']
+    ENVI_SETUP_HEAD, $
+      fname = fileOutput + '.hdr', $ ;Header file name
+      NS = new_samples,$ ;Number of samples
+      NL = new_lines, $ ;Number of lines
+      data_type = 3,$ ; Data type of file
+      interleave =  0, $ ;specify the interleave output: 0: BSQ,1: BIL,2: BIP
+      NB = new_bands,$ ;Number of Bands
+      map_info = map_info, $ ;Map Info - set to the base image since raster has been resized.
+      bnames = raster_wl, $ ;Bands Names
+      /write
+    ;;; DONE CREATING ENVI HEADER FILE ;;;
+
+    ;;; CLOSING ;;;
+    envi_file_mng, ID = fidEmis, /remove ;Close current Raster image
+    envi_file_mng, ID = fidTemp, /remove ;Close current Raster image
+    envi_file_mng, ID = fidInter, /remove ;Close current Raster image
+    envi_file_mng, ID = fidFinal, /remove ;Close current Raster image
+    FILE_DELETE, fileOutputTemp ;Delete the temporary BIL formatted image
+    FILE_DELETE, fileOutputTemp + '.hdr' ;Delete the temporary BIL formatted image
+    ;;; DONE CLOSING ;;;
+
   ENDFOREACH ;;;LOOP THROUGH FLIGHTLINES;;;
    
 ENDFOREACH  ;;; LOOP THROUGH FLIGHT DATES ;;;
