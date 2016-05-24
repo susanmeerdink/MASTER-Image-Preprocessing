@@ -1,5 +1,9 @@
 PRO layer_stack_master
-;
+; This code stacks the MASTER emissivity and surface temperature files.
+; It does not use the ENVI layer function because that function projects the new image and rotates it
+; The files (to be resized) must be in 0 rotation (North to South). 
+; This code also changes the image into Data Type 3 instead of the original Data Type 14 - which cannot be read in
+; R or new ENVI. 
 ;Susan Meerdink
 ;5/11/2016
 ;--------------------------------------------------------------------------
@@ -15,7 +19,7 @@ ENVI_BATCH_INIT ;Doesn't require having ENVI open - use with stand alone IDL 64 
 ;;; DONE SETTING UP ENVI/IDL ENVIRONMENT ;;;
 
 ;;; SETTING UP FLIGHTLINE FOLDERS ;;;
-fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20131125'))
+fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20140829'))
 ;;; DONE SETTING UP FLIGHTLINE FOLDERS ;;;
 
 ;;; PROCESSING ;;;
