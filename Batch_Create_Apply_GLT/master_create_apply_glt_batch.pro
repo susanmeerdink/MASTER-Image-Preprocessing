@@ -39,7 +39,7 @@ PRO master_create_apply_glt_batch
     i_proj = envi_proj_create(/geographic) ;Use this keyword to specify the input projection for the x and y map location images.
     o_proj = envi_proj_create(/utm, zone = 11, south = north) ;Use this keyword to specify the output projection for the GLT file. /utm,zone=11,datum='North America 1983'
     WHILE (((N = STRPOS(sname, '.dat'))) NE -1) DO STRPUT, sname, '_glt.dat', N
-    out_loc_name = fileDir + element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
+    out_loc_name = element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
     pixel_size = 36 ;Set this keyword to a scalar value that represents both the x and y pixel size of the output GLT image.
 
     ;Create GLT
