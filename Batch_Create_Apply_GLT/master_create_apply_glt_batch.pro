@@ -80,7 +80,7 @@ PRO master_create_apply_glt_batch
 
     ;variables for applying GLT
     WHILE (((N = STRPOS(sname, '.dat'))) NE -1) DO STRPUT, sname, '_GeoRef.dat', N
-    out_georef_name = fileDir + element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
+    out_georef_name = element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
     
     ;Georeference from GLT
     ENVI_DOIT,'ENVI_GEOREF_FROM_GLT_DOIT', $
@@ -115,7 +115,7 @@ PRO master_create_apply_glt_batch
     
     ;variables for applying GLT
     WHILE (((N = STRPOS(sname, '.dat'))) NE -1) DO STRPUT, sname, '_GeoRef.dat', N
-    out_temp_name = fileDir + element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
+    out_temp_name = element + '\' + sname;Use this keyword to specify a string with the output filename for the resulting data.
     if nbRaster EQ 1 then begin
       pos = 0
     endif else begin
