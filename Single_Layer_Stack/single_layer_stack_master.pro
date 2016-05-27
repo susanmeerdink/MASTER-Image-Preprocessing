@@ -58,6 +58,9 @@ FOREACH single_flightline, fl_date_list DO BEGIN ;;; LOOP THROUGH FLIGHT DATES ;
     ;              XE = keyword to specify the x ending value. XE is a zero-based number.
     ;              XS = keyword to specify the x starting value. XS is a zero-based number.
     ;              /BIL = keyword that make data returned in BIL format - dimensions of a BIL slice are always [num_samples, num_bands]               
+    if emis_dt EQ 4 then begin ;If the data type is float instead of 14
+      emisData = FIX(emisData*1000)
+    endif
     outLine = [[emisData],[tempData]];Assign Data to new array
     outImage[0,0,countLine] = outLine ;Assign Array
     countLine = countLine + 1 ;Advance counter used in array assignment 
