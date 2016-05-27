@@ -19,7 +19,7 @@ ENVI_BATCH_INIT ;Doesn't require having ENVI open - use with stand alone IDL 64 
 ;;; DONE SETTING UP ENVI/IDL ENVIRONMENT ;;;
 
 ;;; SETTING UP FLIGHTLINE FOLDERS ;;;
-fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20140829'))
+fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20130606'))
 ;;; DONE SETTING UP FLIGHTLINE FOLDERS ;;;
 
 ;;; PROCESSING ;;;
@@ -59,7 +59,10 @@ FOREACH single_date, fl_date_list DO BEGIN ;;; LOOP THROUGH FLIGHT DATES ;;;
       ;              POS = keyword to specify an array of band positions
       ;              XE = keyword to specify the x ending value. XE is a zero-based number.
       ;              XS = keyword to specify the x starting value. XS is a zero-based number.
-      ;              /BIL = keyword that make data returned in BIL format - dimensions of a BIL slice are always [num_samples, num_bands]               
+      ;              /BIL = keyword that make data returned in BIL format - dimensions of a BIL slice are always [num_samples, num_bands] 
+      if emis_dt EQ 4 then begin ;If the data type is float instead of 14
+        emisData = FIX(emisData*1000)       
+      endif
       outLine = [[emisData],[tempData]];Assign Data to new array
       outImage[0,0,countLine] = outLine ;Assign Array
       countLine = countLine + 1 ;Advance counter used in array assignment 
@@ -110,8 +113,8 @@ FOREACH single_date, fl_date_list DO BEGIN ;;; LOOP THROUGH FLIGHT DATES ;;;
     envi_file_mng, ID = fidTemp, /remove ;Close current Raster image
     envi_file_mng, ID = fidInter, /remove ;Close current Raster image
     envi_file_mng, ID = fidFinal, /remove ;Close current Raster image
-    FILE_DELETE, fileOutputTemp ;Delete the temporary BIL formatted image
-    FILE_DELETE, fileOutputTemp + '.hdr' ;Delete the temporary BIL formatted image
+    ;FILE_DELETE, fileOutputTemp ;Delete the temporary BIL formatted image
+    ;FILE_DELETE, fileOutputTemp + '.hdr' ;Delete the temporary BIL formatted image
     ;;; DONE CLOSING ;;;
 
   ENDFOREACH ;;;LOOP THROUGH FLIGHTLINES;;;
