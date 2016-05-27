@@ -113,8 +113,8 @@ FOREACH single_date, fl_date_list DO BEGIN ;;; LOOP THROUGH FLIGHT DATES ;;;
     envi_file_mng, ID = fidTemp, /remove ;Close current Raster image
     envi_file_mng, ID = fidInter, /remove ;Close current Raster image
     envi_file_mng, ID = fidFinal, /remove ;Close current Raster image
-    ;FILE_DELETE, fileOutputTemp ;Delete the temporary BIL formatted image
-    ;FILE_DELETE, fileOutputTemp + '.hdr' ;Delete the temporary BIL formatted image
+    FILE_DELETE, fileOutputTemp ;Delete the temporary BIL formatted image
+    FILE_DELETE, fileOutputTemp + '.hdr' ;Delete the temporary BIL formatted image
     ;;; DONE CLOSING ;;;
 
   ENDFOREACH ;;;LOOP THROUGH FLIGHTLINES;;;
