@@ -20,6 +20,7 @@ os.chdir(org_dir) #Change directory to the current folder
 #date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
 
 #Alter for Select flightdates
+date_list = [(flightline_name + ' 20130606')]
 
 for date in date_list: #Loop through folders
     dirHome = org_dir + date + '\\'
