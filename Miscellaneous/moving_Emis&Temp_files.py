@@ -13,10 +13,13 @@ org_dir = 'R:\\MASTER_Imagery\\' #Set original directory (where the files are co
 out_dir = 'R:\\Image-To-Image Registration\\' #Set directory where files will out put
 flightline_name = 'Santa Barbara' #What flightline would you like to transfer over?
 file_search = '*emissivity&temp*' #What files are you looking to move?
-#fl_list = ['FL01','FL02','FL03','FL04','FL05','FL06','FL07','FL08','FL09','FL10','FL11'] #Set the flightlines you want to rename
 
 os.chdir(org_dir) #Change directory to the current folder
-date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
+
+#ALL flightdates
+#date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
+
+#Alter for Select flightdates
 
 for date in date_list: #Loop through folders
     dirHome = org_dir + date + '\\'
