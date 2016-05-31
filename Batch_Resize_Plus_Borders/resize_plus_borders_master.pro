@@ -155,8 +155,8 @@ FOREACH single_flightline, fl_list DO BEGIN ;;; LOOP THROUGH FLIGHTLINES ;;;
 
       ;;; WRITE DATA TO ENVI FILE ;;;
       print, 'Writing: ' + single_image 
-      fileOutput = raster_file_name + '_ResizePlusBorder' ;Set file name for new image
-      fileOutputTemp = raster_file_name + 'Temp' ;Set file name for new BSQ image
+      fileOutput = raster_file_name + '_ResizePlusBorder.dat' ;Set file name for new image
+      fileOutputTemp = raster_file_name + '_ResizePlusBorderBIL.dat' ;Set file name for new BSQ image
       ENVI_WRITE_ENVI_FILE, outImage, $ ; Data to write to file
         OUT_NAME = fileOutputTemp, $ ;Output file name
         NB = base_bands, $; Number of Bands
