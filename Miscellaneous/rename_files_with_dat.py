@@ -1,5 +1,5 @@
 ##Renaming Files
-#This script runs through a directory and renames MASTER files to end in .dat.
+#This script runs through a directory and renames files to end in .dat.
 #Susan Meerdink
 #5//16
 #--------------------------------------------------------------
@@ -11,7 +11,7 @@ directory = 'H:\\users\\meerdink\\Image_To_Image_Registration\\' #Set directory
 fl_list = ['1','2','3','4','5','6','7','8','9','10','11'] #Set the flightlines you want to rename
 
 for folder in fl_list: #Loop through folders
-    os.chdir(directory + 'SB_FL' + folder + '\\AVIRIS\\') #Change directory to the current folder
+    os.chdir(directory + 'SB_FL' + folder + '\\MASTER\\') #Change directory to the current folder
     files_list = glob.glob('*') #Get list of all files in directory
     print('Renaming files in folder: ' + 'FL' + folder)
 
