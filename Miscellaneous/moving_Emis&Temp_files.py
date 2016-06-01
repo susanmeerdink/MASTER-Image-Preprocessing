@@ -11,16 +11,16 @@ import glob
  
 org_dir = 'R:\\MASTER_Imagery\\' #Set original directory (where the files are coming from)
 out_dir = 'R:\\Image-To-Image Registration\\' #Set directory where files will out put
-flightline_name = 'Santa Barbara' #What flightline would you like to transfer over?
+flightline_name = 'Sierra Nevada' #What flightline would you like to transfer over?
 file_search = '*emissivity&temp*' #What files are you looking to move?
 
 os.chdir(org_dir) #Change directory to the current folder
 
 #ALL flightdates
-#date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
+date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
 
 #Alter for Select flightdates
-date_list = [(flightline_name + ' 20130606')]
+#date_list = [(flightline_name + ' 20130606')]
 
 for date in date_list: #Loop through folders
     dirHome = org_dir + date + '\\'
@@ -32,7 +32,12 @@ for date in date_list: #Loop through folders
         index = folder.find('FL') 
         folderName = folder[index:index+4]
 
-        newDir = out_dir + 'SB_' + folderName + '\\MASTER\\' #Location of new file
+        if flightline_name is 'Santa Barbara':
+            flName = 'SB_'
+        else:
+            flName = 'SN_'
+
+        newDir = out_dir + flName + folderName + '\\MASTER\\' #Location of new file
     
         if not os.path.exists(newDir): #If this directory doesn't exist
             os.makedirs(newDir)#Create temperature directory
