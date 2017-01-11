@@ -1,6 +1,6 @@
 PRO master_create_apply_glt_batch
   ;this program creates geographic lookup tables for MASTER imagery from the HyspIRI airborne
-  ;campaign. It will go through the test folder and create a glt for each file put in the folder
+  ;campaign. It will go through the folder and create a glt for each file put in the folder
   ;Susan Meerdink 8/4/15
   ;----------------------------------------------------------
   ; Open/Start ENVI
@@ -9,7 +9,7 @@ PRO master_create_apply_glt_batch
   envi_batch_init
 
   ;Select input files
-  fileDir = FILEPATH('', ROOT_DIR = 'R:\MASTER_Imagery\Santa Barbara 20130606\') ;Change this to your directory!
+  fileDir = FILEPATH('', ROOT_DIR = 'F:\Imagery\MASTER\Santa Barbara 20150824\') ;Change this to your directory!
 
   ;Makes directory names for each FL would need to change 'SN' if another Flight box and 11 to the number of flight boxes in your series
   fl_list = FILE_SEARCH(fileDir,'FL*') ; Gets list of all flightlines in this directory

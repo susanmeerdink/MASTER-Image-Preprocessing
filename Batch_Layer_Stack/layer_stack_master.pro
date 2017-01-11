@@ -8,7 +8,7 @@ PRO layer_stack_master
 ;5/11/2016
 ;--------------------------------------------------------------------------
 ;;; INPUTS ;;;
-main_path = 'R:\MASTER_Imagery\' ; Set directory that holds all flightlines
+main_path = 'F:\Imagery\MASTER\' ; Set directory that holds all flightlines
 flightbox_name = 'Santa Barbara' ;Name of flightbox to be processed (SB for Santa Barbara, SN for Sierra Nevada)
 ;;; INPUTS DONE ;;
 
@@ -19,7 +19,7 @@ ENVI_BATCH_INIT ;Doesn't require having ENVI open - use with stand alone IDL 64 
 ;;; DONE SETTING UP ENVI/IDL ENVIRONMENT ;;;
 
 ;;; SETTING UP FLIGHTLINE FOLDERS ;;;
-fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20130606'))
+fl_date_list = FILE_SEARCH(main_path,(flightbox_name + ' 20150824'))
 ;;; DONE SETTING UP FLIGHTLINE FOLDERS ;;;
 
 ;;; PROCESSING ;;;

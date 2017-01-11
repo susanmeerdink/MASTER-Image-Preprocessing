@@ -9,18 +9,19 @@ import os # os is a library that gives us the ability to make OS changes
 from shutil import copyfile
 import glob 
  
-org_dir = 'R:\\MASTER_Imagery\\' #Set original directory (where the files are coming from)
-out_dir = 'R:\\Image-To-Image Registration\\' #Set directory where files will out put
-flightline_name = 'Sierra Nevada' #What flightline would you like to transfer over?
+org_dir = 'F:\\Imagery\\MASTER\\' #Set original directory (where the files are coming from)
+out_dir = 'F:\\Image-To-Image-Registration\\' #Set directory where files will out put
+flightline_name = 'Santa Barbara' #What flightline would you like to transfer over?
 file_search = '*emissivity&temp*' #What files are you looking to move?
 
 os.chdir(org_dir) #Change directory to the current folder
 
 #ALL flightdates
-date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
+#date_list = glob.glob(flightline_name + '*') #get list of flightbox dates
 
 #Alter for Select flightdates
-#date_list = [(flightline_name + ' 20130606')]
+date_list = [(flightline_name + ' 20150416')]
+print(date_list)
 
 for date in date_list: #Loop through folders
     dirHome = org_dir + date + '\\'
@@ -38,9 +39,10 @@ for date in date_list: #Loop through folders
             flName = 'SN_'
 
         newDir = out_dir + flName + folderName + '\\MASTER\\' #Location of new file
+        print(newDir)
     
         if not os.path.exists(newDir): #If this directory doesn't exist
-            os.makedirs(newDir)#Create temperature directory
+            os.makedirs(newDir)#Create directory
 
         for oneFile in file_list:#Loop through files
             indexName = oneFile.find('MASTERL2')

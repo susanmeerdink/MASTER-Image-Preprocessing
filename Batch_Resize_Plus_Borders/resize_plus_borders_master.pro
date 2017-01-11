@@ -12,7 +12,7 @@ PRO resize_plus_borders_master
 ; Created 4/25/2016
 
 ;;; INPUTS ;;;
-main_path = 'R:\Image-To-Image Registration\' ; Set directory that holds all flightlines
+main_path = 'F:\Image-To-Image-Registration\' ; Set directory that holds all flightlines
 sub_path = '\MASTER\' ;Set which master imagery to process
 base_image_id ='*20140416*' ;search term to identify base image (and base image only!) 
 all_image_id = '*MASTERL2*' ;search term which needs to apply to all images in the file path you want co-registered
@@ -155,8 +155,11 @@ FOREACH single_flightline, fl_list DO BEGIN ;;; LOOP THROUGH FLIGHTLINES ;;;
 
       ;;; WRITE DATA TO ENVI FILE ;;;
       print, 'Writing: ' + single_image 
-      fileOutput = raster_file_name + '_ResizePlusBorder.dat' ;Set file name for new image
-      fileOutputTemp = raster_file_name + '_ResizePlusBorderBIL.dat' ;Set file name for new BSQ image
+      IF strmatch(raster_file_name,'*.dat') EQ 1 THEN BEGIN ;If the file name has .dat remove it
+        raster_file_name = file_basename(raster_file_name,'.dat')
+      ENDIF
+      fileOutput = raster_file_name + '_ResizePlusBorder' ;Set file name for new image
+      fileOutputTemp = raster_file_name + '_ResizePlusBorderBIL' ;Set file name for new BSQ image
       ENVI_WRITE_ENVI_FILE, outImage, $ ; Data to write to file
         OUT_NAME = fileOutputTemp, $ ;Output file name
         NB = base_bands, $; Number of Bands
